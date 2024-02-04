@@ -13,6 +13,9 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
+    algoliasearch (1.27.5)
+      httpclient (~> 2.8, >= 2.8.3)
+      json (>= 1.5.1)
     appdev_support (0.2.1)
       tabulo
     base64 (0.1.1)
@@ -40,6 +43,7 @@ GEM
       rexml
     debug_inspector (1.1.0)
     diff-lcs (1.5.0)
+    dotenv (2.8.1)
     draft_matchers (0.0.2)
       capybara
       color_namer
@@ -58,13 +62,19 @@ GEM
       oj (~> 3.13.12)
       rake (~> 13)
     hashdiff (1.0.1)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
+    httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    json (2.7.1)
     matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.5)
     minitest (5.18.1)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.9)
@@ -154,16 +164,20 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
+  x86_64-darwin-21
   x86_64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
+  algoliasearch
   appdev_support
   better_errors
   binding_of_caller
   capybara
+  dotenv
   draft_matchers
   grade_runner
+  httparty
   i18n
   pry
   puma (~> 5.0)

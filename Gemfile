@@ -5,6 +5,9 @@ ruby "3.2.1"
 
 gem "sinatra"
 gem "sinatra-contrib"
+gem "httparty"
+gem "algoliasearch"
+gem "dotenv"
 
 # Use Puma as the app server
 gem "puma", "~> 5.0"

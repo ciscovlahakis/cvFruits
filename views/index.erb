@@ -1,0 +1,123 @@
+<style>
+  .section {
+    margin: 50px;
+  }
+  .header {
+    margin-bottom: 0;
+  }
+  .description {
+    font-size: 18px;
+  }
+  form {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  #search-container {
+    display: flex;
+    margin-bottom: 30px;
+  }
+  #search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+  }
+  a {
+    text-decoration: none;
+    color: #007acc;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<form id="updateForm" action="/update_algolia" method="post" style="display: none;"></form>
+
+<div class="section header">
+  <h1>cvFruits</h1>
+  <p>A simple website for exploring fruits and their nutritional information!</p>
+  <ul>
+    <li>Explore a variety of fruits from <a target="_blank" href="https://www.fruityvice.com/">FruityVice</a>.</li>
+    <li>Search for specific fruits using <a target="_blank" href="https://www.algolia.com/">Algolia Search</a>.</li>
+    <li><a href="#" onclick="document.getElementById('updateForm').submit(); return false;">Update table</a> of fruits for latest content.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div id="search-container">
+    <input id="search-input" type="text" placeholder="Search Fruits..." />
+  </div>
+  <div id="fruits-table-container"></div>
+</div>
+
+<script>
+  const ALGOLIA_APP_ID = "<%= ENV['ALGOLIA_APP_ID'] %>";
+  const ALGOLIA_SEARCH_ONLY_API_KEY = "<%= ENV['ALGOLIA_SEARCH_ONLY_API_KEY'] %>";
+  const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_ONLY_API_KEY);
+  const index = client.initIndex("fruits");
+
+  document.getElementById("search-input").addEventListener("input", function () {
+    const query = this.value;
+    if (query.trim() === "") {
+      fetchFruitsFromServer(); // Fetch and display all fruits if search query is empty
+    } else {
+      index.search(query, { hitsPerPage: 20, page: 0 }).then(({ hits }) => {
+        updateFruitsList(hits);
+      });
+    }
+  });
+
+  function fetchFruitsFromServer() {
+    fetch("/fruits")
+      .then((response) => response.json())
+      .then((data) => {
+        updateFruitsList(data);
+      })
+      .catch((error) => console.error("Error fetching fruits:", error));
+  }
+
+  function updateFruitsList(fruits) {
+    const tableContainer = document.getElementById("fruits-table-container");
+    tableContainer.innerHTML = "<table><thead><tr><th>Name</th><th>Genus</th><th>Family</th><th>Order</th><th>Nutrition</th></tr></thead><tbody></tbody></table>";
+    const tbody = tableContainer.querySelector("tbody");
+
+    fruits.forEach((fruit) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+               <td>${fruit.name}</td>
+               <td>${fruit.genus}</td>
+               <td>${fruit.family}</td>
+               <td>${fruit.order}</td>
+               <td>
+                 <table>
+                   <tr><td>Carbohydrates</td><td>${fruit.nutritions.carbohydrates}g</td></tr>
+                   <tr><td>Protein</td><td>${fruit.nutritions.protein}g</td></tr>
+                   <tr><td>Fat</td><td>${fruit.nutritions.fat}g</td></tr>
+                   <tr><td>Calories</td><td>${fruit.nutritions.calories}</td></tr>
+                   <tr><td>Sugar</td><td>${fruit.nutritions.sugar}g</td></tr>
+                 </table>
+               </td>
+             `;
+      tbody.appendChild(row);
+    });
+  }
+
+  /* Initial fetch and display of all fruits from the server */
+  fetchFruitsFromServer();
+</script>

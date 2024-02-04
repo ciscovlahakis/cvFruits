@@ -1,18 +1,7 @@
-# sinatra-template
+# cvFruits
 
-Use this repository to create new Sinatra apps. 
+A simple website for exploring fruits and their nutritional information!
 
-Optionally, to use `ActiveRecord` for database operations, add to the `app.rb`:
-
-```ruby
-require "sinatra/activerecord"
-```
-
-And in the `config/environment.rb` file add this code block:
-
-```ruby
-configure do
-  # setup a database connection
-  set(:database, { adapter: "sqlite3", database: "db/development.sqlite3" })
-end
-```
+- Explore a variety of fruits from [FruityVice](https://www.fruityvice.com/).
+- Search for specific fruits using [Algolia Search](https://www.algolia.com/).
+- Update table of fruits for latest content.
